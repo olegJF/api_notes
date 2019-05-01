@@ -86,8 +86,3 @@ local_settings.py
 .env
 db.sqlite3
 
-/div.html
-/jobs.html
-/list.html
-/urls.html
-/work.html
