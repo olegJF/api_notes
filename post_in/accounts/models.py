@@ -56,7 +56,7 @@ class User(AbstractBaseUser):
         if self.name:
             return self.name
         return self.email
-    
+
     def get_full_name(self):
         if self.full_name:
             return self.full_name
@@ -64,22 +64,21 @@ class User(AbstractBaseUser):
     
     def has_perm(self, perm, obj=None):
         return True
-    
-    def has_module_perms(self,app_label):
+
+    def has_module_perms(self, app_label):
         return True
 
     @property
     def is_staff(self):
-        if self.is_admin:
+        if self.admin:
             return True
         return self.staff
 
     @property
     def is_admin(self):
         return self.admin
-    
+
     def save(self, *args, **kwargs):
-        print(self.password)
-        if not self.id and not self.admin and not self.staff:
+        if not self.id and not self.staff and not self.admin:
             self.password = make_password(self.password)
-        super().save()
+        super().save(*args, **kwargs)
