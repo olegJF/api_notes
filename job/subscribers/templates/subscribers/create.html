@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}   Регистрация нового пользователя   {% endblock title %}
+{% block content %}
+<div class="row my-5">
+    <div class="col-md-10">
+        <h1 class="my-5 ">Регистрация нового пользователя</h1>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8 mx-auto text-left">
+        <form method="post" action=""> {% csrf_token %}
+        <p><label for="id_email">E-mail:</label> 
+        {{form.email}}</p>
+        <p><label for="id_city">Город:</label> 
+        {{form.city}}   </p>
+        <p><label for="id_specialty">Специальность:</label> 
+        {{form.specialty}}</p>
+        <p><label for="id_password">Пароль:</label> 
+        {{form.password}}</p>
+        <div class="row form-group form-check">
+            <div class="col-md-1  ">
+                <p class=''> {{form.is_active}}
+            </div>
+            <div class="col-md-11  ">
+            <label class="form-check-label" >
+            Я согласен получать рассылку по вакансиям, на указанный мной e-mail.
+            </label>
+             </p>
+            
+            </div>
+        </div>    
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
+    </div>
+</div>
+<!-- <div class="row my-2">
+    <div class="col-md-10 alert alert-danger messages mx-auto text-left">
+        <p class="my-5 ">Информация к сведению! К сожалению, на данный момент, почтовый сервис Gmail, блокирует данную рассылку! Я в процессе поиска решения данной проблемы, но блокировка пока ещё продолжается. Поэтому, если у Вас есть почта на другом почтовом сервисе, зарегистрируйте её. Спасибо!</p>
+    </div>
+</div> -->
+<div class="row my-2">
+    <div class="col-md-10 alert messages alert-success mx-auto text-left">
+        <h5 class="my-5 ">Если в списке нет нужного Вам города или специальности, 
+            то Вы можете заполнить <a href="{% url 'contact'  %}"> форму </a> с Вашими пожеланиями. После того, как необходимые город и специальность будут добавлены в список, 
+            Вы получите подтверждающие письмо, на указанный Вами и-мэйл. </h5>
+    </div>
+</div>
+{% endblock content %}

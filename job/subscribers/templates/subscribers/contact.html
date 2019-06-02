@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}   Форма контакта         {% endblock title %}
+{% block content %}
+<div class="row my-5">
+    <div class="col-md-10 mx-auto">
+        <h1 class="my-5 ">Форма отправки заявки на добавление города или специальности в БД</h1>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <form method="post" action=""> {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" class="btn btn-success">Отправить</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

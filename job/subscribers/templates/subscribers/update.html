@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}   Редактирование данных пользователя         {% endblock title %}
+{% block content %}
+<div class="row my-5">
+    <div class="col-md-10 mx-auto">
+        <h1 class="my-5 ">Редактирование данных пользователя</h1>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <form method="post" action=""> {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" class="btn btn-success">Редактировать</button>
+        </form>
+
+    </div>
+    <div class="col-md-6 my-4">
+        <form method="post" action="{% url 'delete' %}"> {% csrf_token %}
+            {{token_form.as_p}}
+            <button type="submit" class="btn btn-danger">Удалить данные</button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock content %}
