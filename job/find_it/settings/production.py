@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'scraping',
     'subscribers',
     'rest_framework',
+    'django_filters',
     
 ]
 
