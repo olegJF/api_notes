@@ -38,19 +38,23 @@ class VacancyViewSet(ModelViewSet):
     queryset = Vacancy.objects.all()
     serializer_class = VacancySerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    filter_backends = (DjangoFilterBackend, DateFilterBackend)
-    filterset_fields = ('city__slug', 'specialty__slug')
+    # filter_backends = (DjangoFilterBackend, DateFilterBackend)
+    # filterset_fields = ('city__slug', 'specialty__slug')
 
-    # def get_queryset(self):
-    #     city_slug = self.request.query_params.get('city', None)
-    #     sp_slug = self.request.query_params.get('sp', None)
-    #     qs = None
-    #     if city_slug and sp_slug:
-    #         qs = Vacancy.objects.filter(
-    #             city__slug=city_slug, 
-    #             specialty__slug=sp_slug, timestamp__gte=period)
-    #     self.queryset = qs
-    #     return self.queryset
+    def get_queryset(self):
+        city_slug = self.request.query_params.get('city', None)
+        sp_slug = self.request.query_params.get('sp', None)
+        qs = None
+        if city_slug and sp_slug:
+            qs = Vacancy.objects.filter(
+                city__slug=city_slug, 
+                specialty__slug=sp_slug, timestamp__gte=period)
+            if not qs.exists():
+                qs = Vacancy.objects.filter(
+                city__slug=sp_slug, 
+                specialty__slug=city_slug, timestamp__gte=period)
+        self.queryset = qs
+        return self.queryset
 
     # def get_queryset(self):
     #     city_slug = self.request.query_params.get('city', None)
