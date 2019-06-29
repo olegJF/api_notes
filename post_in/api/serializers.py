@@ -36,10 +36,14 @@ class NoteSerializer(ModelSerializer):
 
 class ThinNoteSerializer(ModelSerializer):
     url = HyperlinkedIdentityField(view_name='notes-detail')
+    author = SerializerMethodField(read_only=True)
+
+    def get_author(self, obj):
+        return str(obj.author.email)
 
     class Meta:
         model = Note
-        fields = ('id', 'title', 'url')
+        fields = ('id', 'title', 'url', 'author')
         
 # class NoteSerializer(Serializer):
 #     id = IntegerField(read_only=True)
