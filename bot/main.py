@@ -30,6 +30,7 @@ def parse_text(text_msg):
     '''/start /help, /city /sp, @kiyv @python'''
     addresses = {'city': '/cities', 'sp': '/sp'}
     command_p = r'/\w+'
+    dog_p = r'@\w+'
     message = 'Неверный запрос'
     if '/' in text_msg:
         if '/start' in text_msg or  '/help' in text_msg:
@@ -42,7 +43,10 @@ def parse_text(text_msg):
             command = re.search(command_p, text_msg).group().replace('/', '')
             command = addresses.get(command, None)
             return [command] if command else None
-        
+    elif '@' in text_msg:
+        result = re.findall(dog_p, text_msg)
+        commands = [s.replace('@', '') for s in result]
+        return commands if len(commands) == 2 else None
     else:
         return message
 
@@ -64,7 +68,8 @@ class BotAPI(MethodView):
         text_msg = resp['message']['text']
         chat_id = resp['message']['chat']['id']
         tmp = parse_text(text_msg)
-        # print(tmp)
+        text = 'Неверный запрос'
+        error_msg = 'По Вашему запросу ничего не найдено'
         if tmp:
             if len(tmp) > 10:
                 send_message(chat_id, tmp)
@@ -78,9 +83,43 @@ class BotAPI(MethodView):
                         msg = "Доступные специальности: \n"
                     else:
                         msg = "Доступные города: \n"
-                send_message(chat_id, msg+message)
-
-        # print(resp)
+                    send_message(chat_id, msg+message)
+                else:
+                    send_message(chat_id, error_msg)
+            elif len(tmp) == 2:
+                command = '/vacancy/?city={}&sp={}'.format(*tmp)
+                resp = get_data_from_api(command)
+                if resp:
+                    pices = []
+                    size = len(resp)
+                    extra = len(resp) % 10
+                    if size < 11:
+                        pices.append(resp)
+                    else:
+                        for i in range(size // 10):
+                            y = i * 10
+                            pices.append(resp[y:y + 10])
+                        if extra:
+                            pices.append(resp[y + 10:])
+                    # Сначала отправляю в ответ заголовок
+                    text_msg = 'Результаты поиска, согласно Вашего запроса:\n'
+                    text_msg += '- ' * 10 + '\n'
+                    send_message(chat_id, text_msg)
+                   
+                    for part in pices:
+                        # Потом для каждой части, формирую новый ответ 
+                        # и добавляю его в тот же чат
+                        message = ''
+                        for v in part:
+                            message += v['title'].replace('\t','').replace('\n','') + '\n'
+                            url =  v['url'].split('?')
+                            message += url[0] + '\n'
+                            message += '-' * 5 + '\n\n'
+                        send_message(chat_id, message)
+                else:
+                    send_message(chat_id, error_msg)
+        else:
+            send_message(chat_id, text)
         return '<h1> Hi Telegram_Class!!! </h1>'
 
 app.add_url_rule('/TOKEN/', view_func=BotAPI.as_view('bot'))
